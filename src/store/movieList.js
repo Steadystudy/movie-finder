@@ -68,7 +68,7 @@ const _request = async (options= {}) => {
     })
 
     const res = await fetch(`${process.env.API_END_POINT}?apikey=${process.env.API_KEY}${params}`)
-    
+    console.log(res)
     if(res.ok) {
       return await res.json()
     }
