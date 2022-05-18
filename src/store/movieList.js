@@ -63,13 +63,14 @@ export default {
 }
 
 const _request = async (options= {}) => {
+  const {API_END_POINT, API_KEY} = process.env
   try {
     let params = ''
     Object.entries(options)?.forEach(([key, value]) => {
       params += `&${key}=${value}`
     })
 
-    const res = await fetch(`${process.env.API_END_POINT}?apikey=${process.env.API_KEY}${params}`)
+    const res = await fetch(`${API_END_POINT}?apikey=${API_KEY}${params}`)
     
     if(res.ok) {
       return await res.json()
