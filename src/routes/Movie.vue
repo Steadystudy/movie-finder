@@ -1,5 +1,6 @@
 <template>
   <section>
+    <button @click="$router.push('/')" >뒤로 가기</button>
     <div class="introduceMovie">
       <img :src="movie.Poster" alt="영화 포스터"/>
       <div class="tags">
