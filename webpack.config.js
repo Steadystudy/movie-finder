@@ -1,8 +1,6 @@
 const { VueLoaderPlugin } = require('vue-loader')
 const HtmlPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const Dotenv = require('dotenv-webpack')
-
 
 module.exports = () => {
   return {
@@ -69,7 +67,6 @@ module.exports = () => {
       new CopyPlugin({
         patterns: [{ from: 'static' }],
       }),
-      new Dotenv()
     ],
     devServer: {
       port: 8079,
