@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const defaultValue = {
   s: '',
   page: '1',
