@@ -1,71 +1,20 @@
 <template>
   <section>
-    <title class="searchMovieName">
-      찾으시는 영화 이름 : {{ movieName }}
-    </title>
-    <div class="movieList-wrapper">
-      <article
-        v-for="movie in movieList" 
-        :key="movie.imdbID" 
-        class="movieCard" 
-        @click="clickMovie(movie.imdbID)">
-        <img class="poster" :src="movie.Poster" alt="영화 포스터" />
-        <span class="title">{{movie.Title}} / {{movie.Year}}</span>
-      </article>
-    </div>
-    <div class="selectPage">
-      <button 
-        v-if="page > 10" 
-        class="prev" 
-        @click="goPage">이전</button>
-      <template v-for="n in Math.ceil(totalResults/10)" :key="n">
-        <div v-if="Math.floor((n-1)/10) === Math.floor((page-1)/10)">
-          <button 
-            :id="n"
-            :class="{active: n === parseInt(page,10)}"
-            @click="goPage">{{n}}</button>
-        </div>
-      </template>
-      <button
-        v-if="totalResults && Math.floor((totalResults-1)/100) !== Math.floor((page-1)/10)"
-        class="next" @click="goPage(this)">다음</button>
-    </div>    
+    <Title />
+    <MovieList />
+    <Pagination />
   </section>
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import Title from '~/components/Title'
+import Pagination from '~/components/Pagination'
+import MovieList from '~/components/MovieList'
+
 export default {
-  computed: {
-    ...mapState('movieList', ['movieName','movieList','totalResults','page'])
+  components: {
+    Title,Pagination,MovieList
   },
-  methods: {
-    async clickMovie(id) {
-      await this.$store.dispatch('movieList/bringMovie', id)
-      this.$router.push({
-        name: 'Movie',
-        params: {
-          id
-        }
-      })
-    },
-    async goPage(event) {
-      let page = this.$store.state.movieList.page
-      const button = event.target.closest('button')
-
-      // 다음 버튼 누를 때 11, 21로 넘어가게
-      if(button.classList.contains('next')) {
-        page = Math.floor((page-1)/10)*10+11
-      // 이전 버튼 누를 때 10, 20로 넘어가게
-      } else if (button.classList.contains('prev')) {
-        page = Math.floor((page-1)/10)*10
-      } else {
-        page = button.id      
-      }
-
-      await this.$store.dispatch('movieList/changePage', page)
-    }
-  }
 }
 </script>
 
@@ -76,56 +25,5 @@ section {
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-}
-.searchMovieName {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  font-weight: 600;
-}
-
-.movieList-wrapper {
-  display: grid;
-  grid-template-columns: repeat(5,1fr);
-  width: 1000px;
-  gap: 20px;
-  padding: 0 150px;
-
-  .movieCard {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 160px;
-    height: 250px;
-    cursor: pointer;
-
-    .poster {
-      width: 100%;
-      height: 223px;
-      background-color: rgba(0,0,0,.3);
-      background-size: cover;
-
-    }
-
-    .title {
-      width: 100%;
-      text-align: center;
-      overflow:hidden; 
-      text-overflow:ellipsis; 
-      white-space:nowrap;
-    }
-  }
-}
-
-.selectPage {
-  display: flex;
-  justify-content: center;
-
-  .active {
-    font-weight: 700;
-    font-size: 14px;
-  }
 }
 </style>
