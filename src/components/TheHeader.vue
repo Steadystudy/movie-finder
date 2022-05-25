@@ -6,7 +6,7 @@
     <form @submit.prevent="submitMovieName">
       <input 
         ref="input"
-        v-model.lazy="movieName"
+        v-model.trim.lazy="movieName"
         class="search-movie" 
         placeholder="영화를 검색하세요"/>
     </form>
@@ -48,6 +48,7 @@ header {
   .search-movie{
     width: 400px;
     height: 40px;
+    padding: 0 10px;
   }
 }
 </style>

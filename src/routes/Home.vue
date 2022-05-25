@@ -1,18 +1,17 @@
 <template>
   <section>
-    <div class="searchMovieName">
+    <title class="searchMovieName">
       찾으시는 영화 이름 : {{ movieName }}
-    </div>
+    </title>
     <div class="movieList-wrapper">
-      <div
+      <article
         v-for="movie in movieList" 
-        :id="movie.imdbID" 
         :key="movie.imdbID" 
         class="movieCard" 
-        @click="clickMovie">
+        @click="clickMovie(movie.imdbID)">
         <img class="poster" :src="movie.Poster" alt="영화 포스터" />
         <span class="title">{{movie.Title}} / {{movie.Year}}</span>
-      </div>
+      </article>
     </div>
     <div class="selectPage">
       <button 
@@ -29,7 +28,7 @@
       </template>
       <button
         v-if="totalResults && Math.floor((totalResults-1)/100) !== Math.floor((page-1)/10)"
-        class="next" @click="goPage">다음</button>
+        class="next" @click="goPage(this)">다음</button>
     </div>    
   </section>
 </template>
@@ -41,32 +40,30 @@ export default {
     ...mapState('movieList', ['movieName','movieList','totalResults','page'])
   },
   methods: {
-    async clickMovie(event) {
-      const movie = event.target.closest('div')
-
-      await this.$store.dispatch('movieList/bringMovie', movie.id)
+    async clickMovie(id) {
+      await this.$store.dispatch('movieList/bringMovie', id)
       this.$router.push({
         name: 'Movie',
         params: {
-          id: movie.id
+          id
         }
       })
     },
     async goPage(event) {
-      let p = this.$store.state.movieList.page
+      let page = this.$store.state.movieList.page
       const button = event.target.closest('button')
 
       // 다음 버튼 누를 때 11, 21로 넘어가게
       if(button.classList.contains('next')) {
-        p = Math.floor((p-1)/10)*10+11
+        page = Math.floor((page-1)/10)*10+11
       // 이전 버튼 누를 때 10, 20로 넘어가게
       } else if (button.classList.contains('prev')) {
-        p = Math.floor((p-1)/10)*10
+        page = Math.floor((page-1)/10)*10
       } else {
-        p = button.id      
+        page = button.id      
       }
 
-      await this.$store.dispatch('movieList/changePage', p)
+      await this.$store.dispatch('movieList/changePage', page)
     }
   }
 }
@@ -76,6 +73,8 @@ export default {
 section {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   flex-grow: 1;
 }
 .searchMovieName {
@@ -100,6 +99,7 @@ section {
     align-items: center;
     width: 160px;
     height: 250px;
+    cursor: pointer;
 
     .poster {
       width: 100%;
@@ -107,9 +107,6 @@ section {
       background-color: rgba(0,0,0,.3);
       background-size: cover;
 
-      &:hover {
-        transform: scale(1.2)
-      }
     }
 
     .title {
